@@ -9,6 +9,12 @@ export const REQUEST_CURRENCIES = 'REQUEST_CURRENCIES';
 
 export const FAILED_REQUEST = 'FAILED_REQUEST';
 
+export const GET_QUOTATION = 'GET_QUOTATION';
+
+export const REQUEST_QUOTATION = 'REQUEST_QUOTATION';
+
+export const FAILED_QUOTATION_REQUEST = 'FAILED_QUOTATION_REQUEST';
+
 export const changeEmail = (email) => ({
   type: CHANGE_EMAIL,
   email,
@@ -44,5 +50,28 @@ export function fetchCurrencies() {
       .then((response) => response.json())
       .then((json) => dispatch(getCurrencies(json)))
       .catch((error) => dispatch(failedRequest(error)));
+  };
+}
+
+function getQuotation(obj, json) {
+  obj.exchangeRates = json;
+  return { type: GET_QUOTATION, expenses: obj };
+}
+
+function requestQuotation() {
+  return { type: REQUEST_QUOTATION };
+}
+
+function failedQuotationRequest(error) {
+  return { type: FAILED_QUOTATION_REQUEST, error };
+}
+
+export function fetchQuotation(obj) {
+  return (dispatch) => {
+    dispatch(requestQuotation());
+    return fetch('https://economia.awesomeapi.com.br/json/all')
+      .then((response) => response.json())
+      .then((json) => dispatch(getQuotation(obj, json)))
+      .catch((error) => dispatch(failedQuotationRequest(error)));
   };
 }

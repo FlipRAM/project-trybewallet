@@ -1,10 +1,18 @@
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
-import { GET_CURRENCIES, REQUEST_CURRENCIES, FAILED_REQUEST } from '../actions';
+import {
+  GET_CURRENCIES,
+  REQUEST_CURRENCIES,
+  FAILED_REQUEST,
+  GET_QUOTATION,
+  REQUEST_QUOTATION,
+  FAILED_QUOTATION_REQUEST,
+} from '../actions';
 
 const INITIAL_STATE = {
   currencies: [],
   expenses: [],
   isFetching: false,
+  isFetchingQuotation: false,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
@@ -24,6 +32,23 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       currencies: ['Erro na API'],
+      isFetching: false,
+    };
+  case REQUEST_QUOTATION:
+    return {
+      ...state,
+      isFetchingQuotation: true,
+    };
+  case GET_QUOTATION:
+    return {
+      ...state,
+      expenses: [...state.expenses, action.expenses],
+      isFetching: false,
+    };
+  case FAILED_QUOTATION_REQUEST:
+    return {
+      ...state,
+      expenses: ['Erro na API'],
       isFetching: false,
     };
   default: return state;
