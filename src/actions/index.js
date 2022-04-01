@@ -15,6 +15,8 @@ export const REQUEST_QUOTATION = 'REQUEST_QUOTATION';
 
 export const FAILED_QUOTATION_REQUEST = 'FAILED_QUOTATION_REQUEST';
 
+export const REMOVE_EXPENSE = 'REMOVE_EXPENSE';
+
 export const changeEmail = (email) => ({
   type: CHANGE_EMAIL,
   email,
@@ -74,4 +76,8 @@ export function fetchQuotation(obj) {
       .then((json) => dispatch(getQuotation(obj, json)))
       .catch((error) => dispatch(failedQuotationRequest(error)));
   };
+}
+
+export function removeExpense(arrayObj) {
+  return { type: REMOVE_EXPENSE, expenses: arrayObj };
 }

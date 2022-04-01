@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
+import { removeExpense } from '../actions';
 
 class TableExpense extends React.Component {
   getName = (abbreviation) => {
@@ -11,6 +12,14 @@ class TableExpense extends React.Component {
     const objMatch = expenses.find((element) => element.currency === abbreviation);
 
     return objMatch.exchangeRates[abbreviation].name.split('/')[0];
+  }
+
+  removeExpense = (obj) => {
+    const { expenses, removeById } = this.props;
+    const newExpenses = [...expenses];
+    const index = newExpenses.indexOf(obj);
+    newExpenses.splice(index, 1);
+    removeById(newExpenses);
   }
 
   render() {
@@ -60,6 +69,8 @@ class TableExpense extends React.Component {
                 </button>
                 <button
                   type="button"
+                  data-testid="delete-btn"
+                  onClick={ () => this.removeExpense(element) }
                 >
                   Excluir
                 </button>
@@ -77,8 +88,12 @@ const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
 });
 
+const mapDispatchToProps = (dispatch) => ({
+  removeById: (obj) => dispatch(removeExpense(obj)),
+});
+
 TableExpense.propTypes = {
   expenses: propTypes.arrayOf(propTypes.shape),
 }.isRequired;
 
-export default connect(mapStateToProps, null)(TableExpense);
+export default connect(mapStateToProps, mapDispatchToProps)(TableExpense);

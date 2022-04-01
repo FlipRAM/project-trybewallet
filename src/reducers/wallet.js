@@ -6,6 +6,7 @@ import {
   GET_QUOTATION,
   REQUEST_QUOTATION,
   FAILED_QUOTATION_REQUEST,
+  REMOVE_EXPENSE,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -50,6 +51,11 @@ const wallet = (state = INITIAL_STATE, action) => {
       ...state,
       expenses: ['Erro na API'],
       isFetching: false,
+    };
+  case REMOVE_EXPENSE:
+    return {
+      ...state,
+      expenses: action.expenses,
     };
   default: return state;
   }
