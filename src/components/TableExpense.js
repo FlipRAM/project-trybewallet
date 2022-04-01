@@ -3,6 +3,16 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 
 class TableExpense extends React.Component {
+  getName = (abbreviation) => {
+    const { expenses } = this.props;
+    if (abbreviation === 'USD') {
+      return 'Dólar Comercial';
+    }
+    const objMatch = expenses.find((element) => element.currency === abbreviation);
+
+    return objMatch.exchangeRates[abbreviation].name.split('/')[0];
+  }
+
   render() {
     const { expenses } = this.props;
     const tableHeaderList = [
@@ -31,15 +41,17 @@ class TableExpense extends React.Component {
               <td>{element.description}</td>
               <td>{element.tag}</td>
               <td>{element.method}</td>
-              <td>{element.value}</td>
-              <td>{element.currency}</td>
-              <td>{element.exchangeRates[element.currency].ask}</td>
+              <td>{parseFloat(element.value).toFixed(2)}</td>
+              <td>{this.getName(element.currency)}</td>
               <td>
-                {`${parseInt(element.value, 10)
-                * parseFloat(element.exchangeRates[element.currency].ask).toFixed(2)
+                {parseFloat(element.exchangeRates[element.currency].ask).toFixed(2)}
+              </td>
+              <td>
+                {`${(parseFloat(element.value)
+                * parseFloat(element.exchangeRates[element.currency].ask)).toFixed(2)
                 }`}
               </td>
-              <td>BRL</td>
+              <td>Real</td>
               <td>
                 <button
                   type="button"
