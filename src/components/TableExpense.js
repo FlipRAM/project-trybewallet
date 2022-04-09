@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
-import { removeExpense } from '../actions';
+import { editExpense, formToEdit, removeExpense } from '../actions';
 
 class TableExpense extends React.Component {
   getName = (abbreviation) => {
@@ -20,6 +20,11 @@ class TableExpense extends React.Component {
     const index = newExpenses.indexOf(obj);
     newExpenses.splice(index, 1);
     removeById(newExpenses);
+  }
+
+  editExpense = (obj) => {
+    const { formEdit } = this.props;
+    formEdit(obj);
   }
 
   render() {
@@ -64,6 +69,8 @@ class TableExpense extends React.Component {
               <td>
                 <button
                   type="button"
+                  data-testid="edit-btn"
+                  onClick={ () => this.editExpense(element) }
                 >
                   Editar
                 </button>
@@ -90,6 +97,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   removeById: (obj) => dispatch(removeExpense(obj)),
+  editExpenseAction: (list, obj, index) => dispatch(editExpense(list, obj, index)),
+  formEdit: (obj) => dispatch(formToEdit(obj)),
 });
 
 TableExpense.propTypes = {

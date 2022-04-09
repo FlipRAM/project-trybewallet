@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
-import { fetchQuotation } from '../actions';
+import { editExpense, fetchQuotation, removeFormToEdit } from '../actions';
 
 class FormDispense extends React.Component {
   constructor() {
@@ -16,16 +16,43 @@ class FormDispense extends React.Component {
       tag: 'Alimentação',
       payMethodList: ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'],
       tagDispense: ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'],
+      editData: false,
     };
   }
 
+  componentDidUpdate() {
+    const { dataToEditForm, removeEdit } = this.props;
+    if (dataToEditForm) {
+      this.setState({
+        id: dataToEditForm.id,
+        value: dataToEditForm.value,
+        description: dataToEditForm.description,
+        currency: dataToEditForm.currency,
+        method: dataToEditForm.method,
+        tag: dataToEditForm.tag,
+        editData: dataToEditForm,
+      }, () => removeEdit());
+    }
+  }
+
   updateState = ({ target: { name, value } }) => {
-    this.setState({
-      [name]: value,
-    });
+    const { editData } = this.state;
+    if (editData === false) {
+      this.setState({
+        [name]: value,
+      });
+    } if (editData) {
+      const newEditData = editData;
+      newEditData[name] = value;
+      this.setState({
+        [name]: value,
+        editData: newEditData,
+      });
+    }
   }
 
   saveExpense = () => {
+    const { isEditingForm, expensesList, editExpenseForm } = this.props;
     const {
       id,
       value,
@@ -33,8 +60,8 @@ class FormDispense extends React.Component {
       currency,
       method,
       tag,
+      editData,
     } = this.state;
-    const { fetchQuote } = this.props;
     const obj = {
       id,
       value,
@@ -43,15 +70,24 @@ class FormDispense extends React.Component {
       method,
       tag,
     };
-    this.setState({
-      id: id + 1,
-      value: '',
-      description: '',
-    }, () => fetchQuote(obj));
+    if (isEditingForm === false) {
+      const { fetchQuote } = this.props;
+      this.setState({
+        id: id + 1,
+        value: '',
+        description: '',
+      }, () => fetchQuote(obj));
+    } if (isEditingForm === true) {
+      this.setState({
+        id: id + 1,
+        value: '',
+        description: '',
+      }, () => editExpenseForm(expensesList, editData, id));
+    }
   }
 
   render() {
-    const { currencies } = this.props;
+    const { currencies, isEditingForm } = this.props;
     const {
       value,
       description,
@@ -138,7 +174,7 @@ class FormDispense extends React.Component {
           type="button"
           onClick={ () => this.saveExpense() }
         >
-          Adicionar despesa
+          { isEditingForm ? 'Editar despesa' : 'Adicionar despesa' }
         </button>
       </form>
     );
@@ -147,10 +183,15 @@ class FormDispense extends React.Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  isEditingForm: state.wallet.isEditing,
+  dataToEditForm: state.wallet.dataToEdit,
+  expensesList: state.wallet.expenses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchQuote: (obj) => dispatch(fetchQuotation(obj)),
+  removeEdit: () => dispatch(removeFormToEdit()),
+  editExpenseForm: (list, obj, index) => dispatch(editExpense(list, obj, index)),
 });
 
 FormDispense.propTypes = {

@@ -17,6 +17,14 @@ export const FAILED_QUOTATION_REQUEST = 'FAILED_QUOTATION_REQUEST';
 
 export const REMOVE_EXPENSE = 'REMOVE_EXPENSE';
 
+export const EDIT_EXPENSE = 'EDIT_EXPENSE';
+
+export const FORM_TO_EDIT = 'FORM_TO_EDIT';
+
+export const REMOVE_FORM_TO_EDIT = 'REMOVE_FORM_TO_EDIT';
+
+const api = 'https://economia.awesomeapi.com.br/json/all';
+
 export const changeEmail = (email) => ({
   type: CHANGE_EMAIL,
   email,
@@ -48,7 +56,7 @@ function failedRequest(error) {
 export function fetchCurrencies() {
   return (dispatch) => {
     dispatch(requestCurrencies());
-    return fetch('https://economia.awesomeapi.com.br/json/all')
+    return fetch(api)
       .then((response) => response.json())
       .then((json) => dispatch(getCurrencies(json)))
       .catch((error) => dispatch(failedRequest(error)));
@@ -71,13 +79,27 @@ function failedQuotationRequest(error) {
 export function fetchQuotation(obj) {
   return (dispatch) => {
     dispatch(requestQuotation());
-    return fetch('https://economia.awesomeapi.com.br/json/all')
+    return fetch(api)
       .then((response) => response.json())
       .then((json) => dispatch(getQuotation(obj, json)))
       .catch((error) => dispatch(failedQuotationRequest(error)));
   };
 }
 
+export const editExpense = (expenseList, obj, indexToReplace) => {
+  const newExpenses = expenseList.map((element, index) => {
+    if (index === indexToReplace) {
+      return obj;
+    }
+    return element;
+  });
+  return ({ type: EDIT_EXPENSE, newExpenses });
+};
+
 export function removeExpense(arrayObj) {
   return { type: REMOVE_EXPENSE, expenses: arrayObj };
 }
+
+export const formToEdit = (dataToEdit) => ({ type: FORM_TO_EDIT, dataToEdit });
+
+export const removeFormToEdit = () => ({ type: REMOVE_FORM_TO_EDIT });

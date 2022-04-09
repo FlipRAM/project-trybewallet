@@ -7,6 +7,9 @@ import {
   REQUEST_QUOTATION,
   FAILED_QUOTATION_REQUEST,
   REMOVE_EXPENSE,
+  EDIT_EXPENSE,
+  FORM_TO_EDIT,
+  REMOVE_FORM_TO_EDIT,
 } from '../actions';
 
 const INITIAL_STATE = {
@@ -14,6 +17,8 @@ const INITIAL_STATE = {
   expenses: [],
   isFetching: false,
   isFetchingQuotation: false,
+  dataToEdit: false,
+  isEditing: false,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
@@ -57,6 +62,14 @@ const wallet = (state = INITIAL_STATE, action) => {
       ...state,
       expenses: action.expenses,
     };
+  case EDIT_EXPENSE:
+    return {
+      ...state,
+      expenses: action.newExpenses,
+      isEditing: false,
+    };
+  case FORM_TO_EDIT: return { ...state, dataToEdit: action.dataToEdit, isEditing: true };
+  case REMOVE_FORM_TO_EDIT: return { ...state, dataToEdit: false };
   default: return state;
   }
 };
