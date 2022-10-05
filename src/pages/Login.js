@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { changeEmail } from '../actions';
+import styles from './Login.module.css';
 
 class Login extends React.Component {
   constructor() {
@@ -11,6 +13,7 @@ class Login extends React.Component {
       email: '',
       password: '',
       isDisabled: true,
+      passIsShow: false,
     };
   }
 
@@ -42,30 +45,58 @@ class Login extends React.Component {
     history.push('/carteira');
   }
 
+  changePassType = () => {
+    const { passIsShow } = this.state;
+    if (passIsShow) {
+      this.setState({ passIsShow: false });
+    } if (passIsShow === false) {
+      this.setState({ passIsShow: true });
+    }
+  }
+
   render() {
-    const { isDisabled } = this.state;
+    const { isDisabled, passIsShow } = this.state;
     return (
-      <form>
-        <input
-          type="email"
-          data-testid="email-input"
-          name="email"
-          onChange={ this.changeForm }
-        />
-        <input
-          type="password"
-          data-testid="password-input"
-          name="password"
-          onChange={ this.changeForm }
-        />
-        <button
-          type="button"
-          disabled={ isDisabled }
-          onClick={ this.saveEmailAndExit }
-        >
-          Entrar
-        </button>
-      </form>
+      <div className={ styles.container }>
+        <form className={ styles.wrapper }>
+          <h1>Entrar</h1>
+          <label htmlFor="email" className={ styles.label }>
+            <input
+              className={ styles.input }
+              type="email"
+              data-testid="email-input"
+              name="email"
+              onChange={ this.changeForm }
+              placeholder="Email"
+            />
+          </label>
+          <label htmlFor="password" className={ styles.label }>
+            <input
+              className={ styles.input }
+              type={ passIsShow ? 'text' : 'password' }
+              data-testid="password-input"
+              name="password"
+              onChange={ this.changeForm }
+              placeholder="Senha"
+            />
+            <button
+              className={ styles.btn_pass }
+              type="button"
+              onClick={ this.changePassType }
+            >
+              {passIsShow ? <FaEye /> : <FaEyeSlash />}
+            </button>
+          </label>
+          <button
+            className={ styles.btn_login }
+            type="button"
+            disabled={ isDisabled }
+            onClick={ this.saveEmailAndExit }
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
     );
   }
 }

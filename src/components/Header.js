@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
+import { BiMoney } from 'react-icons/bi';
+import styles from './Header.module.css';
 
 class Header extends React.Component {
   checkExpense = () => {
@@ -25,22 +27,34 @@ class Header extends React.Component {
   render() {
     const { email } = this.props;
     return (
-      <header>
-        <p
-          data-testid="total-field"
-        >
-          {this.checkExpense()}
-        </p>
-        <span
-          data-testid="header-currency-field"
-        >
-          BRL
-        </span>
-        <p
-          data-testid="email-field"
-        >
-          { email }
-        </p>
+      <header className={ styles.HeaderContainer }>
+        <div className={ styles.IconContainer }>
+          <div className={ styles.Icon }>
+            <BiMoney />
+            <span>
+              /
+            </span>
+          </div>
+          <p
+            data-testid="email-field"
+          >
+            { email }
+            feliperangel@live.com.pt
+          </p>
+        </div>
+        <div className={ styles.TotalExpenses }>
+          <p
+            data-testid="total-field"
+          >
+            {this.checkExpense()}
+            {' '}
+            <span
+              data-testid="header-currency-field"
+            >
+              BRL
+            </span>
+          </p>
+        </div>
       </header>
     );
   }
